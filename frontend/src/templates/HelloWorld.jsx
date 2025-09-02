@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function App() {
+function HelloWorld() {
   const [message, setMessage] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
@@ -42,7 +42,7 @@ function App() {
         return;
       }
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/hello/${value}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/greeting/${value}/`);
         setGreeting(response.data.message);
       } catch (error) {
         console.error("Error fetching greeting:", error);
@@ -75,12 +75,12 @@ function App() {
 
       <h2>For Dynamic routing</h2>
         <input
-        type="text"
-        value={name}
-        placeholder="Enter your name"
-        onChange={(e) => {
-          setName(e.target.value);
-          fetchGreeting(e.target.value); // fetch greeting on change
+          type="text"
+          value={name}
+          placeholder="Enter your name"
+          onChange={(e) => {
+            setName(e.target.value);
+            fetchGreeting(e.target.value); // fetch greeting on change
         }}
       />
 
@@ -90,4 +90,4 @@ function App() {
   );
 }
 
-export default App;
+export default HelloWorld;
