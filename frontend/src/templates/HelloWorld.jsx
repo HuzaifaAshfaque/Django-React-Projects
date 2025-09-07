@@ -1,91 +1,124 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import GoingToHome from "../Components/GoingToHome";
+
+const BASE_URL = "http://127.0.0.1:8000/api";
 
 function HelloWorld() {
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [name, setName] = useState("");
   const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/hello/")
-      .then((response) => {
-        setMessage(response.data.message);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
+    axios
+      .get(`${BASE_URL}/hello/`)
+      .then((res) => setMessages(res.data.message))
+      .catch((err) => console.error("Error fetching messages:", err));
   }, []);
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!inputMessage.trim()) return;
+
     try {
-        const response = await axios.post("http://127.0.0.1:8000/api/message/", {
-          message : inputMessage,
-        })
-        setResponseMessage(response.data.message)
-        setInputMessage("")
-    } catch (error) {
-        console.error("Error Posting Message :", error);
-        if (error.response && error.response.data) {
-            setResponseMessage(error.response.data.error || "An error occurred");
-        } else {
-            setResponseMessage("Network error, please try again.");
-        }
-      }
-  }
+      const res = await axios.post(`${BASE_URL}/message/`, {
+        message: inputMessage,
+      });
+      setResponseMessage(res.data.message);
+      setInputMessage("");
+      setMessages((prev) => [...prev, inputMessage]);
+    } catch (err) {
+      console.error("Error posting message:", err);
+      setResponseMessage(
+        err.response?.data?.error || "Network error, please try again."
+      );
+    }
+  };
 
-    const fetchGreeting = async (value) => {
-      if (!value.trim()) {
-        setGreeting(""); // clear if input is empty
-        return;
-      }
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/greeting/${value}/`);
-        setGreeting(response.data.message);
-      } catch (error) {
-        console.error("Error fetching greeting:", error);
-        setGreeting("Could not fetch greeting.");
-      }
-    };
+  const fetchGreeting = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) {
+      setGreeting("");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${BASE_URL}/greeting/${name}/`);
+      setGreeting(res.data.message);
+    } catch (err) {
+      console.error("Error fetching greeting:", err);
+      setGreeting("Could not fetch greeting.");
+    }
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Django + React Test</h1>
-      <ul>
-        {message.map((value, index) => {
-            return <li key={index}>{value}</li>
-        })}
-      </ul>
-      
-      <h2>For sending Message</h2>
-      <form onSubmit={handleSubmit} method="post">
-        <input 
-            type="text"
-            name="message"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-                
-        />
+    <div className="bg-secondary min-vh-100 d-flex flex-column">
+      <GoingToHome />
 
-        <button type="submit">Submit</button>
-      </form>
+      {/* Centered Content Container */}
+      <div
+        className="mx-auto p-4"
+        style={{ width: "50%", minWidth: "300px", marginTop: "50px" }}
+      >
+        <h1 className="text-center text-light mb-4">Django + React Test</h1>
 
-      { responseMessage && <h2>Response : {responseMessage}</h2>}
+        {/* Messages Section */}
+        <section className="mb-5">
+          <h2 className="text-center text-light mb-3">Messages</h2>
+          <ul className="list-group mb-3">
+            {messages.map((msg, idx) => (
+              <li key={idx} className="list-group-item">
+                {msg}
+              </li>
+            ))}
+          </ul>
 
-      <h2>For Dynamic routing</h2>
-        <input
-          type="text"
-          value={name}
-          placeholder="Enter your name"
-          onChange={(e) => {
-            setName(e.target.value);
-            fetchGreeting(e.target.value); // fetch greeting on change
-        }}
-      />
+          <form className="d-flex gap-2 mb-3" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="message"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              placeholder="Enter message"
+              className="form-control"
+            />
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </form>
 
-      {/* Show Greeting */}
-      {greeting && <h2>{greeting}</h2>}
+          {responseMessage && (
+            <div className="text-center mt-2">
+              <h5>Response: {responseMessage}</h5>
+            </div>
+          )}
+        </section>
+
+        {/* Dynamic Greeting Section */}
+        <section>
+          <h2 className="text-center text-light mb-3">Dynamic Greeting</h2>
+          <form className="d-flex gap-2 mb-3" onSubmit={fetchGreeting}>
+            <input
+              type="text"
+              value={name}
+              placeholder="Enter your name"
+              onChange={(e) => setName(e.target.value)}
+              className="form-control"
+            />
+            <button type="submit" className="btn btn-primary">
+              Greet Me
+            </button>
+          </form>
+
+          {greeting && (
+            <div className="text-center mt-2">
+              <h5>{greeting}</h5>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
