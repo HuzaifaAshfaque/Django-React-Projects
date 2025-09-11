@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 @api_view(['GET', 'POST'])
-def todo_list(request):
+def todo_list(request, format = None):
     if request.method == 'GET':
         todos = Todo.objects.all()
         serializer = TodoSerializers(todos, many = True)
@@ -24,7 +24,7 @@ def todo_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def todo_list_details(request,pk):
+def todo_list_details(request, pk, format=None):
     try :
         todo = Todo.objects.get(pk=pk)
     except Todo.DoesNotExist:
