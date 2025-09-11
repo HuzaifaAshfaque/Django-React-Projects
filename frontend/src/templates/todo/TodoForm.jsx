@@ -21,6 +21,8 @@ const TodoForm = ({ todo, onSubmit, onCancel, response, error }) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
     onSubmit({ title, description, completed });
+    setTitle('')
+    setDescription('')
   };
 
   return (

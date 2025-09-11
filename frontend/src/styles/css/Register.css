@@ -1,0 +1,22 @@
+.register-background {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+.register-card {
+  width: 400px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.register-card input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+.register-card .btn-primary {
+  transition: all 0.3s ease;
+}
+
+.register-card .btn-primary:hover {
+  background-color: #1a5edb;
+}

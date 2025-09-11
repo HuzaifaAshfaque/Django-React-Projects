@@ -16,6 +16,12 @@ function Home() {
                 description="Click to visit Crud Page"
                 navigateTo="/crud"
             />
+
+             <Card
+                title="School-portal"
+                description="Click to visit Portal"
+                navigateTo="/school-portal"
+            />
         </div>
     </>
   );
