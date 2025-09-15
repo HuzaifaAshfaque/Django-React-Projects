@@ -20,6 +20,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, username, password=None, **extra_fields):
+        extra_fields.setdefault("role", "admin")
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)# 👈 custom flag
@@ -37,8 +38,13 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
 
     # Roles
-    is_teacher = models.BooleanField(default=False)
-    is_student = models.BooleanField(default=True)
+    ROLE_CHOICES = (
+        ("admin", "Admin"),
+        ("teacher", "Teacher"),
+        ("student", "Student"),
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="student")
+
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"

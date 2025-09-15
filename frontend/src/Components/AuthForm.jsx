@@ -6,7 +6,7 @@ const AuthForm = ({
   onSubmit,
   loading,
   error,
-  message,   // ✅ added here
+  message, 
   submitText,
   footer,
 }) => {
@@ -16,23 +16,28 @@ const AuthForm = ({
         <h2 className="text-center mb-4">{title}</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}
-        {message && <div className="alert alert-info">{message}</div>}  {/* ✅ show message */}
+        {message && <div className="alert alert-info">{message}</div>}
 
         <form onSubmit={onSubmit}>
           {fields.map((field, idx) => {
-            if (field.id === "teacherSwitch") {
+            // Handle role selection
+            if (field.id === "role") {
               return (
-                <div className="form-check form-switch mb-3" key={idx}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="teacherSwitch"
-                    checked={field.value}
-                    onChange={field.onChange}
-                  />
-                  <label className="form-check-label" htmlFor="teacherSwitch">
-                    Teacher?
+                <div className="mb-3" key={idx}>
+                  <label htmlFor="role" className="form-label">
+                    Select Role
                   </label>
+                  <select
+                    id="role"
+                    className="form-select"
+                    value={field.value}
+                    onChange={field.onChange}
+                    required
+                  >
+                    <option value="">-- Choose Role --</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                  </select>
                 </div>
               );
             }

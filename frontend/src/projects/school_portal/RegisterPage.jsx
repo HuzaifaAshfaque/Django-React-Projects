@@ -7,7 +7,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isTeacher, setIsTeacher] = useState(false);
+  const [role, setRole] = useState("student"); // 👈 default student
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -20,13 +20,11 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      // ✅ store the response in a variable
       const res = await axios.post("http://127.0.0.1:8000/user/register/", {
         email,
         username,
         password,
-        is_teacher: isTeacher,
-        is_student: !isTeacher,
+        role, // 👈 send role instead of is_teacher/is_student
       });
 
       setError(""); // clear any previous errors
@@ -35,16 +33,15 @@ const RegisterPage = () => {
         setMessage(
           "✅ Registration successful! Check your email to verify your account before logging in."
         );
-        // 👉 Optionally redirect after 2 sec
         setTimeout(() => navigate("/login"), 5000);
       } else {
         setMessage("⚠️ Registration failed: " + res.data.message);
       }
     } catch (err) {
       if (err.response?.data?.email) {
-        setError(err.response.data.email[0]); // show first email error
+        setError(err.response.data.email[0]);
       } else if (err.response?.data?.username) {
-        setError(err.response.data.username[0]); // show first username error
+        setError(err.response.data.username[0]);
       } else {
         setError("Registration failed. Please try again.");
       }
@@ -90,9 +87,16 @@ const RegisterPage = () => {
             required: true,
           },
           {
-            id: "teacherSwitch",
-            value: isTeacher,
-            onChange: (e) => setIsTeacher(e.target.checked),
+            id: "role",
+            label: "Role",
+            type: "select", // 👈 dropdown for teacher/student
+            value: role,
+            onChange: (e) => setRole(e.target.value),
+            options: [
+              { value: "student", label: "Student" },
+              { value: "teacher", label: "Teacher" },
+              { value: "admin", label: "Admin" }, // optional
+            ],
           },
         ]}
         footer={
@@ -100,14 +104,8 @@ const RegisterPage = () => {
             Already have an account? <Link to="/login">Login here</Link>
           </>
         }
-
         message={message}
-        
-        
-        
       />
-
-  
     </>
   );
 };

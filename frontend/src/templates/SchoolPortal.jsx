@@ -1,37 +1,40 @@
+// SchoolPortal.js
 import React from "react";
-import { Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import StudentDashboard from "../projects/school_portal/StudentDashboard";
+import TeacherDashboard from "../projects/school_portal/TeacherDashboard";
 
 const SchoolPortal = () => {
-  const navigate = useNavigate()
-  // Check if user and access token exist in localStorage
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("access");
 
-
   if (!user || !token) {
-    // User not logged in → redirect to login page
     return <Navigate to="/login" replace />;
   }
 
   const logout = () => {
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("user");
-      navigate("/login", { replace: true });
-
-
-  }
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
 
   return (
-    <div>
-      <h1>Welcome to My Portal</h1>
-      <p>Hello, {user.username}</p>
-      <p>You are a {user.is_teacher ? 'Teacher' : 'Student'}</p>
-     
-      <button onClick={logout}>Logout</button>
-    </div>
+    <>
+      <button
+        onClick={logout}
+        className="btn btn-danger position-absolute top-0 end-0 m-3"
+      >
+        Logout
+      </button>
+
+      {user.role == 'Teacher' ? (
+        <TeacherDashboard user={user} />
+      ) : (
+        <StudentDashboard user={user} />
+      )}
+    </>
   );
 };
 

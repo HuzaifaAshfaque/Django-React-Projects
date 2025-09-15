@@ -8,7 +8,7 @@ from .models import CustomUser, TeacherProfile, StudentProfile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ("id", "email", "username", "is_teacher", "is_student")
+        fields = ("id", "email", "username", "role")
 
 
 # -----------------
@@ -33,7 +33,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ("id", "email", "username", "password", "is_teacher", "is_student")
+        fields = ("id", "email", "username", "password", "role")
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email=value).exists():
@@ -45,8 +45,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             username=validated_data["username"],
             password=validated_data["password"],
-            is_teacher=validated_data.get("is_teacher", False),
-            is_student=validated_data.get("is_student", True),
+            role=validated_data.get("role"),
             is_active=False,   # 🚨 inactive until email verification
 
         )

@@ -170,7 +170,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')  # ← your Gmail, not webmaster@localhost
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD') 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER      # ensure from_email uses your Gmail
-
-
-print(os.environ.get('EMAIL_PASSWORD') )
-print(os.environ.get('EMAIL_USER') )
